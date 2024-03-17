@@ -1,8 +1,9 @@
-FROM python:3.9-alpine3.16
+FROM docker.io/library/pypy:3.10-7.3.15
 
-RUN apk add --update --no-cache libxml2-dev libxslt-dev
-RUN apk add --update --no-cache --virtual .build_deps build-base libffi-dev \
-  && pip install parsedmarc \
-  && apk del .build_deps
+RUN apt-get update \
+  && apt-get install -y libxml2-dev libxslt-dev python3-dev \
+  && pip install --no-cache-dir parsedmarc \
+  && rm -rf /root/.cache/ \
+  && rm -rf /var/lib/{apt,dpkg}/
 
-CMD ["parsedmarc", "-c", "/parsedmarc.ini", "/input/*", "--debug"]
+CMD ["parsedmarc"]
